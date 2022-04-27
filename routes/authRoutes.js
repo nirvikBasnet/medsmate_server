@@ -1,20 +1,16 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-const {jwtkey} = require('../keys')
+const dotenv = require('dotenv').config();
+const jwtkey = process.env.JWT_KEY;
+
 
 const router = express.Router();
 const User = mongoose.model('User');
 
-
-
 router.post('/signup',async (req,res)=>{
     //console.log(req.body)
-
-   
-
     const {email,password} = req.body;
-
     try{
 
         const user = new User({email,password});
@@ -22,12 +18,7 @@ router.post('/signup',async (req,res)=>{
         await user.save();
 
         const token = jwt.sign({userId:user._id},jwtkey) //id from mongodb
-        res.send({token})
-
-
-
-
-        
+        res.send({token})      
     }catch(err){
        return res.status(422).send(err.message)
          
